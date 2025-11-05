@@ -1,0 +1,17 @@
+from cloud.office365.management.exchange
+
+select has(ClientIP, ".") as ip4
+select ifthenelse(ip4, split(ClientIP, ":", 0), ip6(ClientIP)) as IP
+select ifthenelse(ip4, isp(ip4(IP)), isp(ip6(IP))) as ISP
+
+where Operation = "New-InboxRule" or Operation = "UpdateInboxRules"
+where toktains(Parameters_Raw, "\"DeleteMessage\", \"Value\": \"True\"")
+where not toktains(Parameters_Raw, "\"Name\": \"From\"")
+where not toktains(Parameters_Raw, "\"Name\": \"ReceivedBeforeDate\"")
+where not toktains(Parameters_Raw, "\"Name\": \"ExceptIfFrom\"")
+where not toktains(Parameters_Raw, "\"Name\": \"SubjectContainsWords\"")
+
+select lu("employeesUPN", "EmployeeId", UserId) as cNumber
+select lu("employeesUPN", "JobTitle", UserId) as JobTitle
+select lu("employeesUPN", "Department", UserId) as Department
+select lu("employeesUPN", "Location", UserId) as Location
