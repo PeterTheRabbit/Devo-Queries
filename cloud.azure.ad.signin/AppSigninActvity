@@ -1,0 +1,13 @@
+from cloud.azure.ad.signin
+
+where properties_conditionalAccessStatus = "success"
+
+select has(callerIpAddress, ":") as ip6
+select ifthenelse(ip6, isp(ip6(callerIpAddress)), isp(ip4(callerIpAddress))) as ISP
+
+where properties_userPrincipalName = "" or
+    callerIpAddress = "badIP" or
+    weakhas(ISP, "badISP")
+
+group by properties_appDisplayName as App, ISP
+select count() as Logins
