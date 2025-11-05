@@ -1,0 +1,8 @@
+from cloud.office365.management.onedrive
+
+where UserId = ""
+
+select has(ClientIP, ":") as ip6
+select ifthenelse(ip6, isp(ip6(ClientIP)), isp(ip4(ClientIP))) as ISP
+
+select eventdate, UserId, ClientIP, ObjectId, SourceFileName, Operation
