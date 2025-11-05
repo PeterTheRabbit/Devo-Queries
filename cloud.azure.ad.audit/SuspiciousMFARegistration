@@ -1,0 +1,17 @@
+from cloud.azure.ad.audit
+where operationName = "User registered security info"
+where properties_operationType = "Add"
+where properties_result = "success"
+select has(callerIpAddress, ":") as ip6
+select ifthenelse(ip6, isp(ip6(callerIpAddress)), isp(ip4(callerIpAddress))) as ISP
+select ifthenelse(ip6, countrycode(ip6(callerIpAddress)), countrycode(ip4(callerIpAddress))) as Country
+select lu("BadISPs", "Verdict", ISP) as ISPverdict
+where isnotnull(ISPverdict) or Country /= "US" and isnotnull(Country)
+
+select lu("employeesUPN", "JobTitle", properties_initiatedBy_user_userPrincipalName) as jobTitle
+select lu("employeesUPN", "Department", properties_initiatedBy_user_userPrincipalName) as department
+select lu("employeesUPN", "Location", properties_initiatedBy_user_userPrincipalName) as officeLocation
+
+where isnotnull(jobTitle)
+
+select eventdate, operationName, resultDescription, callerIpAddress, properties_initiatedBy_user_userPrincipalName as Username
