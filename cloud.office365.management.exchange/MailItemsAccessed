@@ -1,0 +1,33 @@
+from cloud.office365.management.exchange
+where MailboxOwnerUPN = ""
+
+select has(ClientAddress, ":") as ip6
+select ifthenelse(ip6, isp(ip6(ClientAddress)), isp(ip4(ClientAddress))) as ISP
+
+select dropnulls((mkarray(
+str(jqeval(jqcompile(".[0].FolderItems[0].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[0].FolderItems[1].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[0].FolderItems[2].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[0].FolderItems[3].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[0].FolderItems[4].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[0].FolderItems[5].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[0].FolderItems[6].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[0].FolderItems[7].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[0].FolderItems[8].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[0].FolderItems[9].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[1].FolderItems[0].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[1].FolderItems[1].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[1].FolderItems[2].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[1].FolderItems[3].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[1].FolderItems[4].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[1].FolderItems[5].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[1].FolderItems[6].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[1].FolderItems[7].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[1].FolderItems[8].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[1].FolderItems[9].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[2].FolderItems[0].InternetMessageId"), Folders)),
+str(jqeval(jqcompile(".[2].FolderItems[1].InternetMessageId"), Folders))
+)))
+as messageIDs
+
+select eventdate, MailboxOwnerUPN as Username,  Operation, ClientIPAddress
