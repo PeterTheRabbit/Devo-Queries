@@ -1,0 +1,26 @@
+from app.workday.user_activity.activity
+  where activity_action = "WRITE"
+  where task_display_name = "Add My Account" or task_display_name = "Change My Account"
+
+select ifthenelse(isnotnull(ip_v6), isp(ip_v6), isp(ip_v4)) as ISP,
+request_time as RequestTime,
+eventdate as LogTime,
+ifthenelse(isnotnull(ip_v6), str(ip_v6), str(ip_v4)) as IP,
+ifthenelse(isnotnull(ip_v6), city(ip_v6), city(ip_v4)) as City,
+ifthenelse(isnotnull(ip_v6), subdivision1code(ip_v6), subdivision1code(ip_v4)) as State,
+ifthenelse(isnotnull(ip_v6), countrycode(ip_v6), countrycode(ip_v4)) as Country,
+add(City, " ", State, " ", Country) as Location,
+task_display_name as Activity,
+user_agent,
+uaosname(user_agent) as OS,
+uaname(user_agent) as Browser,
+add(OS, " ", Browser) as UserAgent,
+system_account as CNumber
+
+select lu("employeesCNum", "UserPrincipalName", system_account) as username
+select lu("employeesCNum", "JobTitle", system_account) as jobTitle
+select lu("employeesCNum", "Department", system_account) as department
+select lu("employeesCNum", "Location", system_account) as officeLocation
+select lu("BadISPs", "Verdict", ISP) as ISPverdict
+
+where isnotnull(Country) and Country /= "US" or isnotnull(ISPverdict)
